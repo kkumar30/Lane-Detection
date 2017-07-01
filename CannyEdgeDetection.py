@@ -2,12 +2,13 @@ import cv2
 import numpy as np 
 
 cap = cv2.VideoCapture('video.avi')
+#cap = cv2.VideoCapture(0)
 
 while True:
 	_, frame = cap.read()
 		
 	#img = cv2.imread('video.avi',0)
-	#edges = cv2.Canny(img,50,50)
+	#edges = cv2.Canny(frame,150,150)
 	edges = cv2.Canny(frame, 200, 300)
 	#cv2.imshow('sobely', frame)
 	cv2.imshow('sobely', edges)
