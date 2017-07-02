@@ -11,8 +11,16 @@ while True:
 	#edges = cv2.Canny(frame,150,150)
 	blurred = cv2.blur(frame,(7,7))
 	edges = cv2.Canny(blurred, 100, 90)
+	
+
+	#Defining region of interest
+	print edges.shape
+	roi = edges[380:650, 480:800]
+
 	#cv2.imshow('sobely', frame)
-	cv2.imshow('sobely', edges)
+	cv2.imshow('sobely', roi)
+
+
 
 	k = cv2.waitKey(1)
 	if k == 35:
