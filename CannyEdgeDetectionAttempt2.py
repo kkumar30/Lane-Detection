@@ -22,18 +22,39 @@ blur_gray = cv2.GaussianBlur(gray,(kernel_size, kernel_size), 0)
 low_threshold = 50
 high_threshold = 150
 edges = cv2.Canny(blur_gray, low_threshold, high_threshold)
+print (edges.shape)
+
+
+#Defining ROI aka Masked edges
+mask = np.zeros_like(edges)
+ignore_mask_color = 200   
+
+# This time we are defining a four sided polygon to mask
+imshape = image.shape
+top_left = (450, 290)
+top_right = (450+40, 290)
+bottom_left = (0,imshape[0]) #(50, 539)
+bottom_right = (imshape[1], imshape[0])
+
+# vertices = np.array([[bottom_left,top_left, top_right, bottom_right]], dtype=np.int32)
+vertices = np.array([[bottom_left,top_left, top_right, bottom_right]], dtype=np.int32)
+cv2.fillPoly(mask, vertices, ignore_mask_color)
+masked_edges = cv2.bitwise_and(edges, mask)
 
 #-------------HOUGH TRANSFORMATION----------------------------------------------
 # Defining the Hough transform parameters
-rho = 1
+rho = 2 #1
 theta = np.pi/180
-threshold = 1
-min_line_length = 10
-max_line_gap = 1
+threshold = 15 #1
+min_line_length = 40 #5
+max_line_gap = 20 #1
 line_image = np.copy(image)*0 #creating a blank to draw lines on
 
 # Run Hough on edge detected image
-lines = cv2.HoughLinesP(edges, rho, theta, threshold, np.array([]),
+#More threshold -> less lines detected
+# more min_line_length -> more short noises discarded
+# max_line_gap -> for connecting the lines
+lines = cv2.HoughLinesP(masked_edges, rho, theta, threshold, np.array([]),
                             min_line_length, max_line_gap)
 
 # Iterate over the output "lines" and draw lines on the blank
@@ -52,8 +73,9 @@ for line in lines:
 color_edges = np.dstack((edges, edges, edges)) 
 
 # Draw the lines on the edge image
+lines_edges = cv2.addWeighted(color_edges, 0.8, line_image, 1, 0) 
 combined = cv2.addWeighted(color_edges, 0.8, line_image, 1, 0) 
-plt.imshow(combined)
+plt.imshow(lines_edges)
 
 # # Display the image
 # plt.imshow(edges, cmap='Greys_r')
