@@ -11,15 +11,36 @@ while True:
 	#edges = cv2.Canny(frame,150,150)
 	blurred = cv2.blur(frame,(7,7))
 	edges = cv2.Canny(blurred, 100, 90)
-	
+
+	# gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+	# edges = cv2.Canny(cv2.cvtColor(img,cv2.COLOR_BGR2GRAY),50,150,apertureSize = 3)
 
 	#Defining region of interest
-	print edges.shape
+	#Size of image is 720 by 1280
 	roi = edges[380:650, 480:800]
+
+
+	#Applying Hough Transformation
+	minLineLength = 500
+	maxLineGap = 30
+	lines = cv2.HoughLinesP(roi,1,np.pi/180,100,minLineLength,maxLineGap)
+	# print len(lines)
+
+	try:
+		for line in lines:
+			for x1,y1,x2,y2 in line:
+				x = cv2.line(roi,(x1,y1),(x2,y2),(0,255,0),2)
+				
+	except TypeError:
+		pass
+	# for line in lines:
+	# 	for x1,y1,x2,y2 in line:
+	# 		cv2.line(roi,(x1,y1),(x2,y2),(0,255,0),2)
+
 
 	#cv2.imshow('sobely', frame)
 	cv2.imshow('sobely', roi)
-
+	# cv2.imwrite('test1.img', roi)
 
 
 	k = cv2.waitKey(1)
