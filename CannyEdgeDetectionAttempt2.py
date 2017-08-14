@@ -51,6 +51,7 @@ max_line_gap = 20 #1
 line_image = np.copy(image)*0 #creating a blank to draw lines on
 
 # Run Hough on edge detected image
+# More Rho pixels -> More unstraight lines will be detected
 #More threshold -> less lines detected
 # more min_line_length -> more short noises discarded
 # max_line_gap -> for connecting the lines
@@ -73,6 +74,9 @@ for line in lines:
 color_edges = np.dstack((edges, edges, edges)) 
 
 # Draw the lines on the edge image
+# color_thresholds = (image < rgb_threshold[0])
+# color_select[color_thresholds | ~region_thresholds] = [0, 0, 0]
+
 lines_edges = cv2.addWeighted(color_edges, 0.8, line_image, 1, 0) 
 combined = cv2.addWeighted(color_edges, 0.8, line_image, 1, 0) 
 plt.imshow(lines_edges)
